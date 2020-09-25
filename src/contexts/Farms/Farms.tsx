@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { useWallet } from 'use-wallet'
-import useSushi from '../../hooks/useSushi'
+import useXFund from '../../hooks/useXFund'
 
 import { bnToDec } from '../../utils'
-import { getMasterChefContract, getEarned } from '../../sushi/utils'
-import { getFarms } from '../../sushi/utils'
+import { getMasterChefContract, getEarned } from '../../xfund/utils'
+import { getFarms } from '../../xfund/utils'
 
 import Context from './context'
 import { Farm } from './types'
@@ -13,7 +13,7 @@ import { Farm } from './types'
 const Farms: React.FC = ({ children }) => {
   const [unharvested, setUnharvested] = useState(0)
 
-  const sushi = useSushi()
+  const sushi = useXFund()
   const { account } = useWallet()
 
   const farms = getFarms(sushi)

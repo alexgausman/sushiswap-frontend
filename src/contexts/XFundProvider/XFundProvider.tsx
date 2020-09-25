@@ -2,35 +2,35 @@ import React, { createContext, useEffect, useState } from 'react'
 
 import { useWallet } from 'use-wallet'
 
-import { Sushi } from '../../sushi'
+import { XFund } from '../../xfund'
 
-export interface SushiContext {
-  sushi?: typeof Sushi
+export interface XFundContext {
+  xFund?: typeof XFund
 }
 
-export const Context = createContext<SushiContext>({
-  sushi: undefined,
+export const Context = createContext<XFundContext>({
+  xFund: undefined,
 })
 
 declare global {
   interface Window {
-    sushisauce: any
+    xFundLib: any
   }
 }
 
-const SushiProvider: React.FC = ({ children }) => {
+const XFundProvider: React.FC = ({ children }) => {
   const { ethereum }: { ethereum: any } = useWallet()
-  const [sushi, setSushi] = useState<any>()
+  const [xFund, setXFund] = useState<any>()
 
   // @ts-ignore
-  window.sushi = sushi
+  window.xFund = xFund
   // @ts-ignore
   window.eth = ethereum
 
   useEffect(() => {
     if (ethereum) {
       const chainId = Number(ethereum.chainId)
-      const sushiLib = new Sushi(ethereum, chainId, false, {
+      const xFundLib = new XFund(ethereum, chainId, false, {
         defaultAccount: ethereum.selectedAddress,
         defaultConfirmations: 1,
         autoGasMultiplier: 1.5,
@@ -40,12 +40,14 @@ const SushiProvider: React.FC = ({ children }) => {
         accounts: [],
         ethereumNodeTimeout: 10000,
       })
-      setSushi(sushiLib)
-      window.sushisauce = sushiLib
+      setXFund(xFundLib)
+      window.xFundLib = xFundLib
     }
   }, [ethereum])
 
-  return <Context.Provider value={{ sushi }}>{children}</Context.Provider>
+  return (
+    <Context.Provider value={{ xFund: xFund }}>{children}</Context.Provider>
+  )
 }
 
-export default SushiProvider
+export default XFundProvider

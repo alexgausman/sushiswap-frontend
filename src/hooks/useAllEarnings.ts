@@ -4,14 +4,14 @@ import { provider } from 'web3-core'
 import BigNumber from 'bignumber.js'
 import { useWallet } from 'use-wallet'
 
-import { getEarned, getMasterChefContract, getFarms } from '../sushi/utils'
-import useSushi from './useSushi'
+import { getEarned, getMasterChefContract, getFarms } from '../xfund/utils'
+import useXFund from './useXFund'
 import useBlock from './useBlock'
 
 const useAllEarnings = () => {
   const [balances, setBalance] = useState([] as Array<BigNumber>)
   const { account }: { account: string; ethereum: provider } = useWallet()
-  const sushi = useSushi()
+  const sushi = useXFund()
   const farms = getFarms(sushi)
   const masterChefContract = getMasterChefContract(sushi)
   const block = useBlock()

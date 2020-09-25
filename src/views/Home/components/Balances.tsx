@@ -8,14 +8,20 @@ import CardContent from '../../../components/CardContent'
 import Label from '../../../components/Label'
 import Spacer from '../../../components/Spacer'
 import Value from '../../../components/Value'
-import SushiIcon from '../../../components/SushiIcon'
+import MoneyIcon from '../../../components/MoneyIcon'
 import useAllEarnings from '../../../hooks/useAllEarnings'
 import useAllStakedValue from '../../../hooks/useAllStakedValue'
 import useFarms from '../../../hooks/useFarms'
 import useTokenBalance from '../../../hooks/useTokenBalance'
-import useSushi from '../../../hooks/useSushi'
-import { getSushiAddress, getSushiSupply } from '../../../sushi/utils'
+import useXFund from '../../../hooks/useXFund'
+import useXPrice from '../../../hooks/useXPrice'
+import {
+  getXFundAddress,
+  getXTokenAddress,
+  getXTokenSupply,
+} from '../../../xfund/utils'
 import { getBalanceNumber } from '../../../utils/formatBalance'
+import { getBalance } from '../../../utils/erc20'
 
 const PendingRewards: React.FC = () => {
   const [start, setStart] = useState(0)
@@ -30,7 +36,7 @@ const PendingRewards: React.FC = () => {
       .toNumber()
   }
 
-  const [farms] = useFarms()
+  /* const [farms] = useFarms()
   const allStakedValue = useAllStakedValue()
 
   if (allStakedValue && allStakedValue.length) {
@@ -38,7 +44,7 @@ const PendingRewards: React.FC = () => {
       (c, { id }, i) => c + (allStakedValue[i].totalWethValue.toNumber() || 0),
       0,
     )
-  }
+  } */
 
   useEffect(() => {
     setStart(end)
@@ -70,20 +76,25 @@ const PendingRewards: React.FC = () => {
 }
 
 const Balances: React.FC = () => {
-  const [totalSupply, setTotalSupply] = useState<BigNumber>()
-  const sushi = useSushi()
-  const sushiBalance = useTokenBalance(getSushiAddress(sushi))
+  const [circSupply, setCircSupply] = useState<BigNumber>()
+  const xFund = useXFund()
+  const xTokenBalance = useTokenBalance(getXTokenAddress(xFund))
+  const reserveSupply = useTokenBalance(
+    getXTokenAddress(xFund),
+    getXFundAddress(xFund),
+  )
+  const xPrice = useXPrice()
   const { account, ethereum }: { account: any; ethereum: any } = useWallet()
 
   useEffect(() => {
-    async function fetchTotalSupply() {
-      const supply = await getSushiSupply(sushi)
-      setTotalSupply(supply)
+    async function fetchSupplyInfo() {
+      const supply = await getXTokenSupply(xFund)
+      setCircSupply(supply.minus(reserveSupply))
     }
-    if (sushi) {
-      fetchTotalSupply()
+    if (xFund && reserveSupply && reserveSupply.toString() !== '0') {
+      fetchSupplyInfo()
     }
-  }, [sushi, setTotalSupply])
+  }, [xFund, setCircSupply, reserveSupply])
 
   return (
     <StyledWrapper>
@@ -91,36 +102,32 @@ const Balances: React.FC = () => {
         <CardContent>
           <StyledBalances>
             <StyledBalance>
-              <SushiIcon />
+              <MoneyIcon />
               <Spacer />
               <div style={{ flex: 1 }}>
-                <Label text="Your SUSHI Balance" />
+                <Label text="Your PUNK Balance" />
                 <Value
-                  value={!!account ? getBalanceNumber(sushiBalance) : 'Locked'}
+                  value={!!account ? getBalanceNumber(xTokenBalance) : 'Locked'}
                 />
               </div>
             </StyledBalance>
           </StyledBalances>
         </CardContent>
         <Footnote>
-          Pending harvest
-          <FootnoteValue>
-            <PendingRewards /> SUSHI
-          </FootnoteValue>
+          PUNK price
+          <FootnoteValue>{xPrice && `Ξ ${xPrice}`}</FootnoteValue>
         </Footnote>
       </Card>
       <Spacer />
 
       <Card>
         <CardContent>
-          <Label text="Total SUSHI Supply" />
-          <Value
-            value={totalSupply ? getBalanceNumber(totalSupply) : 'Locked'}
-          />
+          <Label text="Circulating PUNK Supply" />
+          <Value value={circSupply ? getBalanceNumber(circSupply) : 'Locked'} />
         </CardContent>
         <Footnote>
-          New rewards per block
-          <FootnoteValue>1,000 SUSHI</FootnoteValue>
+          Max supply
+          <FootnoteValue>10,000 PUNK</FootnoteValue>
         </Footnote>
       </Card>
     </StyledWrapper>

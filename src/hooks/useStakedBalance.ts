@@ -3,14 +3,14 @@ import { useCallback, useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { useWallet } from 'use-wallet'
 
-import { getStaked, getMasterChefContract } from '../sushi/utils'
-import useSushi from './useSushi'
+import { getStaked, getMasterChefContract } from '../xfund/utils'
+import useXFund from './useXFund'
 import useBlock from './useBlock'
 
 const useStakedBalance = (pid: number) => {
   const [balance, setBalance] = useState(new BigNumber(0))
   const { account }: { account: string } = useWallet()
-  const sushi = useSushi()
+  const sushi = useXFund()
   const masterChefContract = getMasterChefContract(sushi)
   const block = useBlock()
 

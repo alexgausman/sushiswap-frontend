@@ -8,10 +8,12 @@ import TopBar from './components/TopBar'
 import FarmsProvider from './contexts/Farms'
 import ModalsProvider from './contexts/Modals'
 import TransactionProvider from './contexts/Transactions'
-import SushiProvider from './contexts/SushiProvider'
+import XFundProvider from './contexts/XFundProvider'
 import useModal from './hooks/useModal'
 import theme from './theme'
-import Farms from './views/Farms'
+import MintPage from './views/MintPage'
+import RedeemPage from './views/RedeemPage'
+import AboutPage from './views/AboutPage'
 import Home from './views/Home'
 import Stake from './views/Stake'
 
@@ -35,11 +37,14 @@ const App: React.FC = () => {
           <Route path="/" exact>
             <Home />
           </Route>
-          <Route path="/farms">
-            <Farms />
+          <Route path="/mint" exact>
+            <MintPage />
           </Route>
-          <Route path="/staking">
-            <Stake />
+          <Route path="/redeem" exact>
+            <RedeemPage />
+          </Route>
+          <Route path="/about" exact>
+            <AboutPage />
           </Route>
         </Switch>
       </Router>
@@ -57,13 +62,11 @@ const Providers: React.FC = ({ children }) => {
           walletconnect: { rpcUrl: 'https://mainnet.eth.aragon.network/' },
         }}
       >
-        <SushiProvider>
+        <XFundProvider>
           <TransactionProvider>
-            <FarmsProvider>
-              <ModalsProvider>{children}</ModalsProvider>
-            </FarmsProvider>
+            <ModalsProvider>{children}</ModalsProvider>
           </TransactionProvider>
-        </SushiProvider>
+        </XFundProvider>
       </UseWalletProvider>
     </ThemeProvider>
   )

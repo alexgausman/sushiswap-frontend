@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import chef from '../../assets/img/chef.png'
+import bank from '../../assets/img/bank.png'
 import Button from '../../components/Button'
 import Container from '../../components/Container'
 import Page from '../../components/Page'
@@ -12,9 +12,9 @@ const Home: React.FC = () => {
   return (
     <Page>
       <PageHeader
-        icon={<img src={chef} height={120} />}
-        title="MasterChef is Ready"
-        subtitle="Stake Uniswap LP tokens to claim your very own yummy SUSHI!"
+        icon={<img src={bank} height={120} />}
+        title="A tokenized Xs fund"
+        subtitle="1 PUNK token = 1 Xs collectible"
       />
 
       <Container>
@@ -22,16 +22,20 @@ const Home: React.FC = () => {
       </Container>
       <Spacer size="lg" />
       <StyledInfo>
-        🏆<b>Pro Tip</b>: SUSHI-ETH UNI-V2 LP token pool yields TWICE more token
-        rewards per block.
+        🏆<b>Pro Tip</b>: It makes sense to deposit your least valued Xs since
+        all PUNK tokens are equal.
       </StyledInfo>
       <Spacer size="lg" />
       <div
         style={{
           margin: '0 auto',
+          display: 'flex',
+          width: '500px',
         }}
       >
-        <Button text="🔪 See the Menu" to="/farms" variant="secondary" />
+        <Button text="Mint PUNK tokens" to="/mint" variant="secondary" />
+        <div style={{ width: '50px' }}></div>
+        <Button text="Redeem a X" to="/redeem" variant="secondary" />
       </div>
     </Page>
   )
